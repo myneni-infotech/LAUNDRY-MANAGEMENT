@@ -355,4 +355,7 @@ ClientSchema.methods.restore = function() {
   return this.save();
 };
 
-export default mongoose.model<IClient>('Client', ClientSchema);
+const Client = mongoose.model<IClient>('Client', ClientSchema);
+
+export default Client;
+export type { IClient };

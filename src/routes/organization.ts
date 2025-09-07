@@ -1,11 +1,13 @@
 import { Router } from 'express';
 import organizationController from '../controllers/organizationController';
-import { auth as authenticate } from '../middleware/auth';
+import { auth } from '../middleware/auth';
 import { validate } from '../middleware/validation';
 import { requireAdmin, requireManagerOrAdmin } from '../middleware/roleAuth';
 import Joi from 'joi';
 
 const router = Router();
+
+router.use(auth);
 
 const createOrganizationSchema = Joi.object({
   name: Joi.string().min(2).max(100).required().trim(),
@@ -191,7 +193,7 @@ const updateOrganizationSchema = Joi.object({
  *       401:
  *         description: Unauthorized
  */
-router.post('/', authenticate, requireAdmin, validate(createOrganizationSchema), organizationController.createOrganization);
+router.post('/', requireAdmin, validate(createOrganizationSchema), organizationController.createOrganization);
 
 /**
  * @swagger
@@ -241,7 +243,7 @@ router.post('/', authenticate, requireAdmin, validate(createOrganizationSchema),
  *             schema:
  *               $ref: '#/components/schemas/ApiResponse'
  */
-router.get('/', authenticate, requireManagerOrAdmin, organizationController.getAllOrganizations);
+router.get('/', requireManagerOrAdmin, organizationController.getAllOrganizations);
 
 /**
  * @swagger
@@ -266,7 +268,7 @@ router.get('/', authenticate, requireManagerOrAdmin, organizationController.getA
  *       404:
  *         description: Organization not found
  */
-router.get('/:id', authenticate, requireManagerOrAdmin, organizationController.getOrganizationById);
+router.get('/:id', requireManagerOrAdmin, organizationController.getOrganizationById);
 
 /**
  * @swagger
@@ -297,7 +299,7 @@ router.get('/:id', authenticate, requireManagerOrAdmin, organizationController.g
  *       404:
  *         description: Organization not found
  */
-router.put('/:id', authenticate, requireAdmin, validate(updateOrganizationSchema), organizationController.updateOrganization);
+router.put('/:id', requireAdmin, validate(updateOrganizationSchema), organizationController.updateOrganization);
 
 /**
  * @swagger
@@ -324,7 +326,7 @@ router.put('/:id', authenticate, requireAdmin, validate(updateOrganizationSchema
  *       404:
  *         description: Organization not found
  */
-router.delete('/:id', authenticate, requireAdmin, organizationController.deleteOrganization);
+router.delete('/:id', auth, requireAdmin, organizationController.deleteOrganization);
 
 /**
  * @swagger
@@ -349,6 +351,6 @@ router.delete('/:id', authenticate, requireAdmin, organizationController.deleteO
  *       404:
  *         description: Organization not found
  */
-router.patch('/:id/restore', authenticate, requireAdmin, organizationController.restoreOrganization);
+router.patch('/:id/restore', requireAdmin, organizationController.restoreOrganization);
 
 export default router;

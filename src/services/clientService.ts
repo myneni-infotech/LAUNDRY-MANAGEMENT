@@ -1,5 +1,6 @@
 import { Types } from 'mongoose';
-import Client, { IClient } from '../models/Client';
+import Client from '../models/Client';
+import type { IClient } from '../models/Client';
 import { AppError } from '../utils/AppError';
 
 export interface ICreateClient {

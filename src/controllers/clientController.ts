@@ -34,7 +34,7 @@ class ClientController {
     try {
       const { organizationId } = req.params;
       const page = parseInt(req.query.page as string) || 1;
-      const limit = parseInt(req.query.limit as string) || 10;
+      const limit = parseInt(req.query.limit as string) || 100;
       const filters = {
         name: req.query.name as string,
         email: req.query.email as string,
@@ -71,14 +71,17 @@ class ClientController {
       };
 
       res.status(200).json(response);
+
     } catch (error: any) {
       next(error);
     }
   }
 
-  public async updateClient(req: Request, res: Response, next: NextFunction): Promise<void> {
+  public async updateClient(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { id, organizationId } = req.params;
+      //  const { id, organizationId } = [req.user._id, req.user.organization._id];
+      const id = req.user._id?.toString();
+      const organizationId = req.user?.organization?._id?.toString();
       const updateData = req.body;
 
       const client = await clientService.updateClient(id, updateData, organizationId);

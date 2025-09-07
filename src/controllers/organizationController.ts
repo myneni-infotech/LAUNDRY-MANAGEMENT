@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import { ApiResponse, AuthenticatedRequest } from '../types/api';
 import { AppError } from '../utils/AppError';
 import * as organizationService from '../services/organizationService';
@@ -30,7 +30,7 @@ class OrganizationController {
     }
   }
 
-  public async getAllOrganizations(req: Request, res: Response, next: NextFunction): Promise<void> {
+  public async getAllOrganizations(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
     try {
       const page = parseInt(req.query.page as string) || 1;
       const limit = parseInt(req.query.limit as string) || 10;
@@ -55,9 +55,9 @@ class OrganizationController {
     }
   }
 
-  public async getOrganizationById(req: Request, res: Response, next: NextFunction): Promise<void> {
+  public async getOrganizationById(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { id } = req.params;
+      const { id } = req.organization?.id;
       const organization = await organizationService.getOrganizationById(id);
 
       const response: ApiResponse = {
@@ -72,9 +72,9 @@ class OrganizationController {
     }
   }
 
-  public async updateOrganization(req: Request, res: Response, next: NextFunction): Promise<void> {
+  public async updateOrganization(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { id } = req.params;
+      const { id } = req.organization?.id;
       const updateData = req.body;
 
       const organization = await organizationService.updateOrganization(id, updateData);
@@ -114,9 +114,9 @@ class OrganizationController {
     }
   }
 
-  public async restoreOrganization(req: Request, res: Response, next: NextFunction): Promise<void> {
+  public async restoreOrganization(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { id } = req.params;
+      const { id } = req.organization?.id;
       const organization = await organizationService.restoreOrganization(id);
 
       const response: ApiResponse = {

@@ -25,14 +25,14 @@ class AuthController {
     try {
       const userData = req.body;
       const result = await authService.signup(userData);
-      
+
       if (result.message) {
         const response: ApiResponse = {
           success: true,
           message: result.message,
           data: null
         };
-        return res.status(200).json(response);
+        res.status(200).json(response);
       }
 
       const response: ApiResponse = {
@@ -135,7 +135,7 @@ class AuthController {
    * Logout user
    * @route POST /api/auth/logout
    */
-  public async logout(req: Request<{}, any, RefreshTokenRequest>, res: Response, next: NextFunction): Promise<void> {
+  public async logout(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
     try {
       const { refreshToken } = req.body;
       await authService.logout(refreshToken);
@@ -159,7 +159,7 @@ class AuthController {
   public async getProfile(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
     try {
       const user = req.user;
-      
+
       if (!user) {
         return next(new AppError('User not authenticated', 401));
       }

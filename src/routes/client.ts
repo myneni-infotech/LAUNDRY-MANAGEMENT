@@ -1,11 +1,13 @@
 import { Router } from 'express';
 import clientController from '../controllers/clientController';
-import { auth as authenticate } from '../middleware/auth';
+import { auth } from '../middleware/auth';
 import { validate } from '../middleware/validation';
-import { requireManagerOrAdmin, requireSupervisorOrAbove, checkOrganizationAccess } from '../middleware/roleAuth';
+import { requireManagerOrAdmin, requireSupervisorOrAbove } from '../middleware/roleAuth';
 import Joi from 'joi';
 
 const router = Router();
+
+router.use(auth);
 
 const addressSchema = Joi.object({
   street: Joi.string().max(200).required().trim(),
@@ -282,7 +284,7 @@ const updateClientSchema = Joi.object({
 
 /**
  * @swagger
- * /api/organizations/{organizationId}/clients:
+ * /api/{organizationId}/clients:
  *   post:
  *     summary: Create a new client
  *     tags: [Clients]
@@ -313,11 +315,11 @@ const updateClientSchema = Joi.object({
  *       401:
  *         description: Unauthorized
  */
-router.post('/organizations/:organizationId/clients', authenticate, checkOrganizationAccess, requireSupervisorOrAbove, validate(createClientSchema), clientController.createClient);
+router.post('/:organizationId/clients', requireManagerOrAdmin, validate(createClientSchema), clientController.createClient);
 
 /**
  * @swagger
- * /api/organizations/{organizationId}/clients:
+ * /api/{organizationId}/clients:
  *   get:
  *     summary: Get all clients for an organization
  *     tags: [Clients]
@@ -384,11 +386,11 @@ router.post('/organizations/:organizationId/clients', authenticate, checkOrganiz
  *             schema:
  *               $ref: '#/components/schemas/ApiResponse'
  */
-router.get('/organizations/:organizationId/clients', authenticate, checkOrganizationAccess, requireSupervisorOrAbove, clientController.getAllClients);
+router.get('/:organizationId/clients', requireSupervisorOrAbove, clientController.getAllClients);
 
 /**
  * @swagger
- * /api/organizations/{organizationId}/clients/search:
+ * /api/{organizationId}/clients/search:
  *   get:
  *     summary: Search clients
  *     tags: [Clients]
@@ -425,11 +427,11 @@ router.get('/organizations/:organizationId/clients', authenticate, checkOrganiza
  *             schema:
  *               $ref: '#/components/schemas/ApiResponse'
  */
-router.get('/organizations/:organizationId/clients/search', authenticate, checkOrganizationAccess, requireSupervisorOrAbove, clientController.searchClients);
+router.get('/:organizationId/clients/search', requireSupervisorOrAbove, clientController.searchClients);
 
 /**
  * @swagger
- * /api/organizations/{organizationId}/clients/{id}:
+ * /api/{organizationId}/clients/{id}:
  *   get:
  *     summary: Get client by ID
  *     tags: [Clients]
@@ -456,11 +458,11 @@ router.get('/organizations/:organizationId/clients/search', authenticate, checkO
  *       404:
  *         description: Client not found
  */
-router.get('/organizations/:organizationId/clients/:id', authenticate, checkOrganizationAccess, requireSupervisorOrAbove, clientController.getClientById);
+router.get('/:organizationId/clients/:id', requireSupervisorOrAbove, clientController.getClientById);
 
 /**
  * @swagger
- * /api/organizations/{organizationId}/clients/{id}:
+ * /api/{organizationId}/clients/{id}:
  *   put:
  *     summary: Update client by ID
  *     tags: [Clients]
@@ -493,11 +495,11 @@ router.get('/organizations/:organizationId/clients/:id', authenticate, checkOrga
  *       404:
  *         description: Client not found
  */
-router.put('/organizations/:organizationId/clients/:id', authenticate, checkOrganizationAccess, requireSupervisorOrAbove, validate(updateClientSchema), clientController.updateClient);
+router.put('/:organizationId/clients/:id', requireSupervisorOrAbove, validate(updateClientSchema), clientController.updateClient);
 
 /**
  * @swagger
- * /api/organizations/{organizationId}/clients/{id}:
+ * /api/{organizationId}/clients/{id}:
  *   delete:
  *     summary: Delete client by ID
  *     tags: [Clients]
@@ -526,11 +528,11 @@ router.put('/organizations/:organizationId/clients/:id', authenticate, checkOrga
  *       404:
  *         description: Client not found
  */
-router.delete('/organizations/:organizationId/clients/:id', authenticate, checkOrganizationAccess, requireManagerOrAdmin, clientController.deleteClient);
+router.delete('/:organizationId/clients/:id', requireManagerOrAdmin, clientController.deleteClient);
 
 /**
  * @swagger
- * /api/organizations/{organizationId}/clients/{id}/restore:
+ * /api/{organizationId}/clients/{id}/restore:
  *   patch:
  *     summary: Restore deleted client
  *     tags: [Clients]
@@ -557,6 +559,6 @@ router.delete('/organizations/:organizationId/clients/:id', authenticate, checkO
  *       404:
  *         description: Client not found
  */
-router.patch('/organizations/:organizationId/clients/:id/restore', authenticate, checkOrganizationAccess, requireManagerOrAdmin, clientController.restoreClient);
+router.patch('/:organizationId/clients/:id/restore', requireManagerOrAdmin, clientController.restoreClient);
 
 export default router;

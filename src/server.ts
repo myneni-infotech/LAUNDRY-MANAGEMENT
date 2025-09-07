@@ -13,6 +13,8 @@ import indexRoutes from './routes/index';
 import authRoutes from './routes/auth';
 import clientRoutes from './routes/client';
 import organizationRoutes from './routes/organization';
+import userRoutes from './routes/user';
+import collectionRoutes from './routes/collection';
 
 dotenv.config();
 
@@ -49,6 +51,8 @@ app.use('/api', indexRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api', clientRoutes);
 app.use('/api/organizations', organizationRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/collections', collectionRoutes);
 
 // Health check endpoint
 app.get('/health', (req: Request, res: Response) => {

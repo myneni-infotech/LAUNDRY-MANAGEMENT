@@ -1,4 +1,5 @@
 import { Request } from 'express';
+import type { IOrganization, IUser } from '../models';
 
 export interface ApiResponse<T = any> {
   success: boolean;
@@ -27,7 +28,7 @@ export interface PaginatedResponse<T = any> extends ApiResponse<T[]> {
 }
 
 export interface AuthenticatedRequest extends Request {
-
+  user: IUser;
 }
 
 export interface LoginRequest {
@@ -67,7 +68,7 @@ export type RequestHandler<TRequest = any, TResponse = any> = (
 ) => Promise<void> | void;
 
 export type AuthenticatedRequestHandler<TRequest = any, TResponse = any> = (
-  req: AuthenticatedRequest & Request<any, TResponse, TRequest>,
+  req: Request<any, TResponse, TRequest>,
   res: any,
   next: any
 ) => Promise<void> | void;

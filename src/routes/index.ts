@@ -3,6 +3,11 @@ import { ApiResponse } from '../types/api';
 
 const router = Router();
 
+// Helper function to get version
+const getVersion = (): string => {
+  return '1.0.0';
+};
+
 /**
  * @swagger
  * /api/:

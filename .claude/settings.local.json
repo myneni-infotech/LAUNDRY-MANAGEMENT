@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc:*)",
+      "Bash(npm start)",
+      "Bash(timeout 10 npm start)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

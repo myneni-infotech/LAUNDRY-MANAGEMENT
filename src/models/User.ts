@@ -7,7 +7,8 @@ export interface IUser extends Document {
   email: string;
   password?: string;
   firstName?: string;
-  organizationId?: Types.ObjectId;
+  organization?: Types.ObjectId;
+  clients?: Types.ObjectId[];
   role?: 'collector' | 'supervisor' | 'admin' | 'manager' | 'user';
   lastName?: string;
   profilePicture?: string;
@@ -58,6 +59,19 @@ const UserSchema = new Schema<IUser>({
     type: String,
     trim: true,
     maxlength: 50
+  },
+  organization: {
+    type: Schema.Types.ObjectId,
+    ref: 'Organization'
+  },
+  clients: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Client'
+  }],
+  role: {
+    type: String,
+    enum: ['collector', 'supervisor', 'admin', 'manager', 'user'],
+    default: 'user'
   },
   profilePicture: {
     type: String,
@@ -141,6 +155,8 @@ UserSchema.index({ username: 1 });
 UserSchema.index({ googleId: 1 });
 UserSchema.index({ passwordResetToken: 1 });
 UserSchema.index({ emailVerificationToken: 1 });
+UserSchema.index({ organizationId: 1 });
+UserSchema.index({ clientId: 1 });
 
 // Virtual for full name
 UserSchema.virtual('fullName').get(function () {
@@ -207,4 +223,6 @@ UserSchema.statics.findActive = function () {
   return this.find({ isActive: true });
 };
 
-export default mongoose.model<IUser>('User', UserSchema);
+const User = mongoose.model<IUser>('User', UserSchema);
+
+export default User;

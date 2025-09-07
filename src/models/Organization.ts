@@ -120,7 +120,7 @@ const OrganizationSchema = new Schema<IOrganization>({
   timestamps: true,
   toJSON: {
     virtuals: true,
-    transform: function(doc, ret) {
+    transform: function (doc, ret) {
       ret.id = ret._id;
       delete ret._id;
       delete ret.__v;
@@ -134,8 +134,10 @@ OrganizationSchema.index({ email: 1 });
 OrganizationSchema.index({ name: 1 });
 OrganizationSchema.index({ isDeleted: 1, isActive: 1 });
 
-OrganizationSchema.statics.findActive = function() {
+OrganizationSchema.statics.findActive = function () {
   return this.find({ isActive: true, isDeleted: false });
 };
 
-export default mongoose.model<IOrganization>('Organization', OrganizationSchema);
+const Organization = mongoose.model<IOrganization>('Organization', OrganizationSchema);
+
+export default Organization;
